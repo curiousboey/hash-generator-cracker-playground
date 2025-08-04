@@ -34,7 +34,7 @@ An interactive educational tool for learning about cryptographic hash functions,
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/hash-generator-cracker.git
+   git clone https://github.com/curiousboey/hash-generator-cracker.git
    cd hash-generator-cracker
    ```
 
