@@ -2,6 +2,8 @@
 
 An interactive educational tool for learning about cryptographic hash functions, their security implications, and common vulnerabilities. This playground demonstrates hash generation, educational password cracking, and real-world collision examples.
 
+**🌐 Live Demo**: Experience this playground directly on [saltyhash.tech](https://saltyhash.tech) - designed specifically for interactive learning about cryptographic security.
+
 ## 🌟 Features
 
 ### Hash Generator
@@ -32,10 +34,14 @@ An interactive educational tool for learning about cryptographic hash functions,
 
 ## 🚀 Quick Start
 
+### 🌐 Interactive Experience
+**Try it live**: Visit [saltyhash.tech](https://saltyhash.tech) to interact with this playground directly in your browser - no setup required!
+
+### 💻 Local Development
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/curiousboey/hash-generator-cracker-playground.git
-   cd hash-generator-cracker
+   cd hash-generator-cracker-playground
    ```
 
 2. **Open in browser**:
@@ -99,6 +105,7 @@ This tool is designed for **educational purposes only**. It demonstrates:
 - **Cryptography**: CryptoJS library for hash functions
 - **Design**: CSS Grid, Flexbox, and modern CSS features
 - **No Backend Required**: Runs entirely in the browser
+- **Website Integration**: Embedded and optimized for [saltyhash.tech](https://saltyhash.tech)
 
 ## 🌐 Browser Support
 
