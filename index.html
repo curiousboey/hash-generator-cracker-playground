@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Generator & Cracker Playground</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace;
+            background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 50%, #1a1a1c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #00ff41;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(28, 28, 30, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 100px rgba(0, 255, 65, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 50%, #1a1a1c 100%);
+            color: #00ff41;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="20" font-family="Courier" font-size="8" fill="rgba(0,255,65,0.1)">01</text><text x="50" y="40" font-family="Courier" font-size="8" fill="rgba(0,255,65,0.1)">10</text><text x="20" y="60" font-family="Courier" font-size="8" fill="rgba(0,255,65,0.1)">11</text><text x="80" y="80" font-family="Courier" font-size="8" fill="rgba(0,255,65,0.1)">00</text></svg>') repeat;
+            animation: matrixFloat 15s linear infinite;
+        }
+        
+        @keyframes matrixFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+            color: #66ff66;
+        }
+        
+        .main-content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(44, 44, 46, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 255, 65, 0.3);
+            border-color: rgba(0, 255, 65, 0.6);
+        }
+        
+        .section h2 {
+            color: #00ff41;
+            margin-bottom: 25px;
+            font-size: 2em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #66ff66;
+            font-size: 1.1em;
+        }
+        
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(0, 255, 65, 0.3);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(28, 28, 30, 0.9);
+            color: #00ff41;
+            backdrop-filter: blur(10px);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #00ff41;
+            box-shadow: 0 0 0 4px rgba(0, 255, 65, 0.2), 0 0 20px rgba(0, 255, 65, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .input-group input::placeholder, .input-group textarea::placeholder {
+            color: #336633;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            color: #000000;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 65, 0.5);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: #ffffff;
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 10px 25px rgba(255, 68, 68, 0.5);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .result-box {
+            background: rgba(28, 28, 30, 0.95);
+            border: 2px solid rgba(0, 255, 65, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            word-break: break-all;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 14px;
+            min-height: 60px;
+            color: #00ff41;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .hash-result {
+            background: rgba(44, 44, 46, 0.95);
+            border-color: #00ff41;
+            color: #66ff66;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+        
+        .crack-result {
+            background: rgba(44, 44, 46, 0.95);
+            border-color: #ffaa00;
+            color: #ffcc66;
+        }
+        
+        .error {
+            background: rgba(46, 28, 28, 0.95);
+            border-color: #ff4444;
+            color: #ff6666;
+        }
+        
+        .success {
+            background: rgba(44, 44, 46, 0.95);
+            border-color: #00ff41;
+            color: #66ff66;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .warning-box {
+            background: rgba(46, 38, 28, 0.8);
+            border: 1px solid rgba(255, 170, 0, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .warning-box h3 {
+            color: #ffaa00;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .warning-box p {
+            color: #ffcc66;
+        }
+        
+        .info-box {
+            background: rgba(28, 38, 46, 0.8);
+            border: 1px solid rgba(0, 170, 255, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info-box h3 {
+            color: #00aaff;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .info-box p {
+            color: #66ccff;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 24px;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid rgba(0, 255, 65, 0.5);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: hackerShimmer 1.5s infinite;
+        }
+        
+        @keyframes hackerShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .collision-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .hash-comparison {
+            background: rgba(15, 52, 96, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 255, 65, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .hash-comparison:hover {
+            border-color: rgba(0, 255, 65, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 65, 0.2);
+        }
+        
+        .hash-comparison h4 {
+            color: #66ff66;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .stat-box {
+            background: rgba(15, 52, 96, 0.8);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid rgba(0, 255, 65, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 65, 0.8);
+            box-shadow: 0 10px 25px rgba(0, 255, 65, 0.3);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .stat-label {
+            color: #66cc66;
+            margin-top: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(26, 26, 46, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #66ff66, #44dd44);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Hash Generator & Cracker Playground</h1>
+            <p>Learn about cryptographic hashes, generate them, and understand their security implications</p>
+        </div>
+        
+        <div class="main-content">
+            <!-- Hash Generator Section -->
+            <div class="section">
+                <h2>🔨 Hash Generator</h2>
+                <div class="input-group">
+                    <label for="inputText">Enter text to hash:</label>
+                    <textarea id="inputText" placeholder="Type your text here..." rows="3"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="hashType">Select hash algorithm:</label>
+                    <select id="hashType">
+                        <option value="md5">MD5 (Insecure - Educational only)</option>
+                        <option value="sha1">SHA-1 (Deprecated)</option>
+                        <option value="sha256" selected>SHA-256 (Secure)</option>
+                        <option value="sha512">SHA-512 (Secure)</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="generateHash()">Generate Hash</button>
+                <button class="btn" onclick="clearResults()">Clear</button>
+                
+                <div id="hashResult" class="result-box hash-result" style="display: none;"></div>
+                
+                <div class="info-box">
+                    <h3>💡 Did you know?</h3>
+                    <p>MD5 and SHA-1 are considered insecure due to collision vulnerabilities. Always use SHA-256 or higher for security-critical applications!</p>
+                </div>
+            </div>
+            
+            <!-- Hash Cracker Section -->
+            <div class="section">
+                <h2>🔓 Hash Cracker (Educational)</h2>
+                
+                <div class="warning-box">
+                    <h3>⚠️ Educational Purpose Only</h3>
+                    <p>This tool is for learning about password security. Never attempt to crack hashes you don't own!</p>
+                </div>
+                
+                <div class="input-group">
+                    <label for="hashToCrack">Hash to crack (MD5/SHA1 only):</label>
+                    <input type="text" id="hashToCrack" placeholder="Enter hash to crack...">
+                </div>
+                
+                <div class="input-group">
+                    <label for="crackMethod">Cracking method:</label>
+                    <select id="crackMethod">
+                        <option value="common">Common passwords</option>
+                        <option value="dictionary">Dictionary attack</option>
+                        <option value="bruteforce">Brute force (simple)</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-danger" onclick="crackHash()">Start Cracking</button>
+                <button class="btn" onclick="stopCracking()">Stop</button>
+                
+                <div class="progress" id="crackProgress" style="display: none;">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                
+                <div id="crackResult" class="result-box crack-result" style="display: none;"></div>
+                
+                <div class="stats" id="crackStats" style="display: none;">
+                    <div class="stat-box">
+                        <div class="stat-number" id="attempts">0</div>
+                        <div class="stat-label">Attempts</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="hashesPerSec">0</div>
+                        <div class="stat-label">Hashes/sec</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="timeElapsed">0s</div>
+                        <div class="stat-label">Time Elapsed</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hash Collision Demo -->
+            <div class="section">
+                <h2>💥 Hash Collision Demo</h2>
+                <p>Understand why some hash functions are vulnerable to collisions and how this impacts security:</p>
+                
+                <div class="info-box" style="margin-bottom: 25px;">
+                    <h3>🎯 What are Hash Collisions?</h3>
+                    <p>A hash collision occurs when two different inputs produce the same hash output. This breaks the fundamental security property that each unique input should have a unique hash. Cryptographically broken algorithms like MD5 and SHA-1 are susceptible to collision attacks.</p>
+                </div>
+                
+                <button class="btn" onclick="demonstrateCollision()">Show Real MD5 Collision</button>
+                <button class="btn" onclick="demonstrateLength()">Length Extension Demo</button>
+                <button class="btn" onclick="demonstrateWeakHash()">Weak Hash Examples</button>
+                <button class="btn" onclick="demonstrateBirthdayAttack()">Birthday Attack Theory</button>
+                
+                <div class="collision-demo" id="collisionDemo" style="display: none;">
+                    <div class="hash-comparison">
+                        <h4>Input 1:</h4>
+                        <div id="input1" style="font-size: 12px; word-break: break-all;"></div>
+                        <h4>Hash Result:</h4>
+                        <div id="hash1" style="color: #00ff41; font-weight: bold;"></div>
+                    </div>
+                    <div class="hash-comparison">
+                        <h4>Input 2:</h4>
+                        <div id="input2" style="font-size: 12px; word-break: break-all;"></div>
+                        <h4>Hash Result:</h4>
+                        <div id="hash2" style="color: #00ff41; font-weight: bold;"></div>
+                    </div>
+                </div>
+                
+                <div class="info-box" id="collisionInfo" style="display: none;">
+                    <h3 id="collisionTitle">🎯 Collision Explained</h3>
+                    <p id="collisionExplanation"></p>
+                    <div id="securityImpact" style="margin-top: 15px; padding: 15px; background: rgba(30, 0, 0, 0.8); border: 1px solid #ff4444; border-radius: 8px;">
+                        <h4 style="color: #ff6666; margin-bottom: 10px;">⚠️ Security Impact:</h4>
+                        <p id="impactText" style="color: #ff9999;"></p>
+                    </div>
+                </div>
+                
+                <div class="warning-box" style="margin-top: 25px;">
+                    <h3>🛡️ Modern Security Recommendations</h3>
+                    <p><strong>DO USE:</strong> SHA-256, SHA-3, BLAKE2, or Argon2 for security applications.<br>
+                    <strong>DON'T USE:</strong> MD5, SHA-1, or any algorithm with known collision vulnerabilities.<br>
+                    <strong>FOR PASSWORDS:</strong> Use bcrypt, scrypt, or Argon2 with proper salting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        let crackingActive = false;
+        let crackingStartTime = 0;
+        let attemptCount = 0;
+        
+        // Common passwords for educational cracking
+        const commonPasswords = [
+            "password", "123456", "password123", "admin", "qwerty", 
+            "letmein", "welcome", "monkey", "dragon", "secret",
+            "hello", "world", "test", "user", "guest", "demo",
+            "abc123", "password1", "12345", "sunshine", "iloveyou"
+        ];
+        
+        // Dictionary words
+        const dictionaryWords = [
+            "apple", "banana", "cherry", "dog", "elephant", "flower",
+            "guitar", "house", "island", "jacket", "kitchen", "lion",
+            "mountain", "nature", "ocean", "piano", "queen", "river",
+            "sunset", "tree", "umbrella", "village", "water", "yellow"
+        ];
+        
+        function generateHash() {
+            const text = document.getElementById('inputText').value;
+            const hashType = document.getElementById('hashType').value;
+            
+            if (!text) {
+                alert('Please enter some text to hash!');
+                return;
+            }
+            
+            let hash;
+            switch(hashType) {
+                case 'md5':
+                    hash = CryptoJS.MD5(text).toString();
+                    break;
+                case 'sha1':
+                    hash = CryptoJS.SHA1(text).toString();
+                    break;
+                case 'sha256':
+                    hash = CryptoJS.SHA256(text).toString();
+                    break;
+                case 'sha512':
+                    hash = CryptoJS.SHA512(text).toString();
+                    break;
+            }
+            
+            const resultDiv = document.getElementById('hashResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <strong>${hashType.toUpperCase()} Hash:</strong><br>
+                ${hash}<br><br>
+                <strong>Input:</strong> "${text}"<br>
+                <strong>Length:</strong> ${hash.length} characters<br>
+                <strong>Algorithm:</strong> ${hashType.toUpperCase()}
+            `;
+        }
+        
+        function clearResults() {
+            document.getElementById('hashResult').style.display = 'none';
+            document.getElementById('crackResult').style.display = 'none';
+            document.getElementById('crackProgress').style.display = 'none';
+            document.getElementById('crackStats').style.display = 'none';
+            document.getElementById('inputText').value = '';
+            document.getElementById('hashToCrack').value = '';
+        }
+        
+        async function crackHash() {
+            const hashToCrack = document.getElementById('hashToCrack').value.toLowerCase();
+            const method = document.getElementById('crackMethod').value;
+            
+            if (!hashToCrack) {
+                alert('Please enter a hash to crack!');
+                return;
+            }
+            
+            if (hashToCrack.length !== 32 && hashToCrack.length !== 40) {
+                alert('Please enter a valid MD5 (32 chars) or SHA1 (40 chars) hash!');
+                return;
+            }
+            
+            crackingActive = true;
+            crackingStartTime = Date.now();
+            attemptCount = 0;
+            
+            document.getElementById('crackProgress').style.display = 'block';
+            document.getElementById('crackStats').style.display = 'grid';
+            document.getElementById('crackResult').style.display = 'block';
+            document.getElementById('crackResult').innerHTML = 'Cracking in progress...';
+            
+            const isMethod = hashToCrack.length === 32 ? 'md5' : 'sha1';
+            let wordlist = [];
+            
+            switch(method) {
+                case 'common':
+                    wordlist = commonPasswords;
+                    break;
+                case 'dictionary':
+                    wordlist = [...commonPasswords, ...dictionaryWords];
+                    break;
+                case 'bruteforce':
+                    wordlist = generateBruteforceList();
+                    break;
+            }
+            
+            let found = false;
+            for (let i = 0; i < wordlist.length && crackingActive; i++) {
+                const word = wordlist[i];
+                const testHash = isMethod === 'md5' ? 
+                    CryptoJS.MD5(word).toString() : 
+                    CryptoJS.SHA1(word).toString();
+                
+                attemptCount++;
+                updateStats();
+                updateProgress(i, wordlist.length);
+                
+                if (testHash === hashToCrack) {
+                    found = true;
+                    document.getElementById('crackResult').className = 'result-box success';
+                    document.getElementById('crackResult').innerHTML = `
+                        <strong>🎉 CRACKED!</strong><br>
+                        Password: "${word}"<br>
+                        Hash: ${hashToCrack}<br>
+                        Method: ${method}<br>
+                        Attempts: ${attemptCount}
+                    `;
+                    break;
+                }
+                
+                // Add delay to show progress
+                if (i % 10 === 0) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            }
+            
+            if (!found && crackingActive) {
+                document.getElementById('crackResult').className = 'result-box error';
+                document.getElementById('crackResult').innerHTML = `
+                    <strong>❌ Not Found</strong><br>
+                    Could not crack the hash with ${method} method.<br>
+                    Tried ${attemptCount} combinations.<br>
+                    Try a different method or the password might be too complex.
+                `;
+            }
+            
+            crackingActive = false;
+        }
+        
+        function stopCracking() {
+            crackingActive = false;
+            document.getElementById('crackResult').className = 'result-box';
+            document.getElementById('crackResult').innerHTML = 'Cracking stopped by user.';
+        }
+        
+        function generateBruteforceList() {
+            const list = [];
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            
+            // Generate 1-5 character combinations (increased for better demo)
+            for (let len = 1; len <= 5; len++) {
+                for (let i = 0; i < Math.pow(chars.length, len) && list.length < 10000; i++) {
+                    let word = '';
+                    let num = i;
+                    for (let j = 0; j < len; j++) {
+                        word = chars[num % chars.length] + word;
+                        num = Math.floor(num / chars.length);
+                    }
+                    list.push(word);
+                }
+            }
+            return list;
+        }
+        
+        function updateStats() {
+            const timeElapsed = (Date.now() - crackingStartTime) / 1000;
+            const hashesPerSec = Math.round(attemptCount / timeElapsed);
+            
+            document.getElementById('attempts').textContent = attemptCount;
+            document.getElementById('hashesPerSec').textContent = hashesPerSec;
+            document.getElementById('timeElapsed').textContent = timeElapsed.toFixed(1) + 's';
+        }
+        
+        function updateProgress(current, total) {
+            const percent = (current / total) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+        
+        function demonstrateCollision() {
+            // Famous MD5 collision example from Marc Stevens et al.
+            const input1 = "d131dd02c5e6eec4693d9a0698aff95c2fcab58712467eab4004583eb8fb7f8955ad340609f4b30283e488832571415a085125e8f7cdc99fd91dbdf280373c5bd8823e3156348f5bae6dacd436c919c6dd53e2b487da03fd02396306d248cda0e99f33420f577ee8ce54b67080a80d1ec69821bcb6a8839396f9652b6ff72a70";
+            const input2 = "d131dd02c5e6eec4693d9a0698aff95c2fcab50712467eab4004583eb8fb7f8955ad340609f4b30283e4888325f1415a085125e8f7cdc99fd91dbd7280373c5bd8823e3156348f5bae6dacd436c919c6dd53e23487da03fd02396306d248cda0e99f33420f577ee8ce54b67080280d1ec69821bcb6a8839396f965ab6ff72a70";
+            
+            const hash1 = CryptoJS.MD5(CryptoJS.enc.Hex.parse(input1)).toString();
+            const hash2 = CryptoJS.MD5(CryptoJS.enc.Hex.parse(input2)).toString();
+            
+            document.getElementById('collisionDemo').style.display = 'grid';
+            document.getElementById('input1').innerHTML = `<strong>Binary Data (Hex):</strong><br>${input1.substring(0, 64)}...<br><em>128 bytes of carefully crafted binary data</em>`;
+            document.getElementById('hash1').textContent = hash1;
+            document.getElementById('input2').innerHTML = `<strong>Binary Data (Hex):</strong><br>${input2.substring(0, 64)}...<br><em>128 bytes of different binary data</em>`;
+            document.getElementById('hash2').textContent = hash2;
+            
+            document.getElementById('collisionInfo').style.display = 'block';
+            document.getElementById('collisionTitle').textContent = '🎯 Real MD5 Collision Found!';
+            document.getElementById('collisionExplanation').textContent = 
+                'These two different 128-byte binary inputs produce the IDENTICAL MD5 hash! This real collision was discovered by Marc Stevens and demonstrates that MD5 is cryptographically broken. The inputs differ in only a few bytes but hash to the same value.';
+            document.getElementById('impactText').textContent = 
+                'Attackers could create fake documents, certificates, or files that appear legitimate but contain malicious content, all while maintaining the same MD5 signature as the original.';
+        }
+        
+        function demonstrateLength() {
+            const original = "secret_message";
+            const malicious = "secret_message_with_malicious_data";
+            
+            // Demonstrate how length extension works conceptually
+            document.getElementById('collisionDemo').style.display = 'grid';
+            document.getElementById('input1').innerHTML = `<strong>Original Message:</strong><br>"${original}"<br><em>Legitimate message</em>`;
+            document.getElementById('hash1').textContent = CryptoJS.MD5(original).toString();
+            document.getElementById('input2').innerHTML = `<strong>Extended Message:</strong><br>"${malicious}"<br><em>Message extended by attacker</em>`;
+            document.getElementById('hash2').textContent = CryptoJS.MD5(malicious).toString();
+            
+            document.getElementById('collisionInfo').style.display = 'block';
+            document.getElementById('collisionTitle').textContent = '⚡ Length Extension Attack';
+            document.getElementById('collisionExplanation').textContent = 
+                'Length extension attacks allow attackers to append data to a message and compute a valid hash for the extended message, even without knowing the original message content. This affects MD5, SHA-1, and SHA-2 when used improperly.';
+            document.getElementById('impactText').textContent = 
+                'An attacker could modify API requests, extend authentication tokens, or alter signed messages while maintaining valid signatures.';
+        }
+        
+        function demonstrateWeakHash() {
+            // Show how simple inputs can have predictable patterns
+            const examples = [
+                { input: "", hash: CryptoJS.MD5("").toString() },
+                { input: "a", hash: CryptoJS.MD5("a").toString() },
+                { input: "password", hash: CryptoJS.MD5("password").toString() },
+                { input: "123456", hash: CryptoJS.MD5("123456").toString() }
+            ];
+            
+            document.getElementById('collisionDemo').style.display = 'grid';
+            document.getElementById('input1').innerHTML = `<strong>Common Inputs:</strong><br>${examples.map(ex => `"${ex.input || 'empty'}" → ${ex.hash.substring(0, 16)}...`).join('<br>')}`;
+            document.getElementById('hash1').textContent = 'MD5 hashes are predictable';
+            document.getElementById('input2').innerHTML = `<strong>Rainbow Table Attack:</strong><br>Precomputed hash databases<br>can reverse these instantly`;
+            document.getElementById('hash2').textContent = 'No collision needed!';
+            
+            document.getElementById('collisionInfo').style.display = 'block';
+            document.getElementById('collisionTitle').textContent = '🌈 Rainbow Table Weakness';
+            document.getElementById('collisionExplanation').textContent = 
+                'Even without collisions, weak passwords can be instantly cracked using rainbow tables - precomputed databases of common passwords and their hashes. This is why salting is crucial.';
+            document.getElementById('impactText').textContent = 
+                'Billions of MD5 hashes for common passwords are available online. Unsalted password databases can be cracked in seconds.';
+        }
+        
+        function demonstrateBirthdayAttack() {
+            // Explain birthday paradox in hash context
+            document.getElementById('collisionDemo').style.display = 'grid';
+            document.getElementById('input1').innerHTML = `<strong>Birthday Paradox:</strong><br>In a room of 23 people,<br>50% chance of shared birthday<br><br><strong>Hash Context:</strong><br>For n-bit hash, only need<br>√(2^n) = 2^(n/2) attempts<br>to find collision`;
+            document.getElementById('hash1').textContent = 'Probability Theory';
+            document.getElementById('input2').innerHTML = `<strong>MD5 (128-bit):</strong><br>2^64 = 18 quintillion attempts<br>vs 2^128 brute force<br><br><strong>SHA-1 (160-bit):</strong><br>2^80 = 1.2 sextillion attempts<br>vs 2^160 brute force`;
+            document.getElementById('hash2').textContent = 'Still feasible!';
+            
+            document.getElementById('collisionInfo').style.display = 'block';
+            document.getElementById('collisionTitle').textContent = '🎂 Birthday Attack Mathematics';
+            document.getElementById('collisionExplanation').textContent = 
+                'The birthday paradox shows that finding hash collisions requires far fewer attempts than expected. This mathematical principle makes collision attacks practical against shorter hash functions.';
+            document.getElementById('impactText').textContent = 
+                'Modern computing power and GPU farms can perform billions of hash calculations per second, making birthday attacks against MD5 and SHA-1 practically feasible.';
+        }
+        
+        // Pre-populate some example hashes for testing
+        window.addEventListener('load', function() {
+            const examples = [
+                { text: 'hello', md5: '5d41402abc4b2a76b9719d911017c592' },
+                { text: 'password', md5: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8' },
+                { text: 'test', md5: '098f6bcd4621d373cade4e832627b4f6' }
+            ];
+            
+            console.log('Try cracking these MD5 hashes:');
+            examples.forEach(ex => {
+                console.log(`"${ex.text}" -> ${ex.md5}`);
+            });
+        });
+    </script>
+</body>
+</html>
